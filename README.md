@@ -1,0 +1,2 @@
+# mycostr
+decentralized data storage
