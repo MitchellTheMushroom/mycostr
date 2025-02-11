@@ -1,55 +1,134 @@
-# Contributing to Mycostr
+Detailed Contributing Guide
+Project Structure
+Core Components
 
-## Current Status: Research & Exploration Phase
-Mycostr is currently in the research and exploration phase. We're gathering insights, studying existing protocols, and exploring technical approaches to Bitcoin-native distributed storage.
+Storage System
 
-## How to Contribute
 
-### Research & Discussion
-- Join the discussion on Nostr
-- Share insights about distributed storage
-- Provide feedback on technical approaches
-- Suggest use cases and requirements
+File processing
+Chunk management
+Distribution control
+Verification system
 
-### Technical Contributions
-While we're not yet accepting code contributions, we welcome:
-- Technical feedback
-- Architecture suggestions
-- Protocol design insights
-- Security considerations
 
-### Areas of Interest
-1. Storage Distribution
-   - Efficient chunking strategies
-   - Distribution patterns
-   - Redundancy approaches
-   - Network topology
+Network Layer
 
-2. Lightning Integration
-   - Payment channel management
-   - Rate calculation
-   - Provider incentives
-   - Network dynamics
 
-3. Security & Privacy
-   - Encryption methods
-   - Access control
-   - Key management
-   - Privacy preservation
+Node discovery
+Data routing
+Connection management
+Health monitoring
 
-## Getting Started
-1. Read the technical overview
-2. Join the discussion on Nostr
-3. Review current research areas
-4. Share your insights
 
-## Contact
-- GitHub Issues: For technical discussions
-- Email: hello@mycostr.com
-- Nostr: [your npub]
+Payment System
 
-## Code of Conduct
-- Be respectful
-- Focus on technical merit
-- Provide constructive feedback
-- Maintain professionalism
+
+Lightning integration
+Channel management
+Payment processing
+Balance tracking
+
+Development Process
+Getting Started
+
+Pick an issue to work on
+Discuss approach in GitHub issue
+Fork repository
+Create feature branch
+Set up development environment
+
+Code Standards
+
+TypeScript for new code
+ES6+ standards
+Async/await preferred
+Strong typing required
+Clear documentation
+
+Testing Requirements
+
+Unit tests mandatory
+Integration tests for features
+Performance benchmarks
+Security testing
+
+Pull Request Process
+
+Update documentation
+Add/update tests
+Pass all checks
+Request review
+Address feedback
+
+Development Areas
+Priority Areas
+
+Core Protocol
+
+
+Storage system
+Network layer
+Payment integration
+Security features
+
+
+Client Development
+
+
+Command line interface
+API implementation
+User interface
+Documentation
+
+
+Testing Infrastructure
+
+
+Test framework
+Mock systems
+Benchmarking
+Security testing
+
+Getting Help
+
+GitHub discussions
+Development chat
+Weekly meetings
+Documentation
+
+Best Practices
+Code Organization
+
+Clear file structure
+Consistent naming
+Well-documented interfaces
+Proper error handling
+
+Testing
+
+Test-driven development
+Clear test cases
+Good test coverage
+Performance testing
+
+Documentation
+
+Clear comments
+API documentation
+Usage examples
+Architecture updates
+
+Review Process
+Code Review
+
+Two approvals required
+All tests must pass
+Documentation updated
+Performance verified
+
+Security Review
+
+Security impact assessed
+Attack vectors considered
+Privacy implications
+Data handling review
