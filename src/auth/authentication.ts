@@ -234,4 +234,139 @@ class AuthenticationSystem extends EventEmitter {
 
     async disable2FA(userId: string, code: string): Promise<void> {
         const user = this.users.get(userId);
-        if (!user || !u
+        if (!user || !user.twoFactorSecret) {
+            throw new Error('2FA not enabled');
+        }
+
+        if (!this.verifyTwoFactorCode(user.twoFactorSecret, code)) {
+            throw new Error('Invalid 2FA code');
+        }
+
+        user.twoFactorSecret = undefined;
+        this.emit('2FADisabled', { userId });
+    }
+
+    private async createSession(user: User): Promise<Session> {
+        const session: Session = {
+            id: this.generateSessionId(),
+            userId: user.id,
+            token: this.generateToken(user),
+            refreshToken: crypto.randomBytes(32).toString('hex'),
+            created: new Date(),
+            expires: new Date(Date.now() + this.config.tokenExpiration * 1000),
+            lastActivity: new Date()
+        };
+
+        this.sessions.set(session.id, session);
+        return session;
+    }
+
+    private async handleFailedLogin(user: User): Promise<void> {
+        user.loginAttempts++;
+
+        if (user.loginAttempts >= this.config.maxLoginAttempts) {
+            user.status = 'locked';
+            user.lockedUntil = new Date(Date.now() + this.config.lockoutDuration * 1000);
+            this.emit('accountLocked', { userId: user.id });
+        }
+    }
+
+    private generateToken(user: User): string {
+        return jwt.sign(
+            { userId: user.id },
+            this.jwtSecret,
+            { expiresIn: this.config.tokenExpiration }
+        );
+    }
+
+    private async hashPassword(password: string, salt: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            crypto.pbkdf2(
+                password,
+                salt,
+                100000,
+                64,
+                'sha512',
+                (err, derivedKey) => {
+                    if (err) reject(err);
+                    resolve(derivedKey.toString('hex'));
+                }
+            );
+        });
+    }
+
+    private startSessionCleanup(): void {
+        setInterval(() => {
+            const now = new Date();
+            for (const [id, session] of this.sessions) {
+                if (session.expires < now) {
+                    this.sessions.delete(id);
+                }
+            }
+        }, 60000); // Every minute
+    }
+
+    // Utility methods
+    private validateUsername(username: string): void {
+        if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+            throw new Error('Invalid username format');
+        }
+    }
+
+    private validateEmail(email: string): void {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            throw new Error('Invalid email format');
+        }
+    }
+
+    private validatePassword(password: string): void {
+        if (password.length < this.config.passwordMinLength) {
+            throw new Error(`Password must be at least ${this.config.passwordMinLength} characters`);
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            throw new Error('Password must contain at least one uppercase letter');
+        }
+
+        if (!/[a-z]/.test(password)) {
+            throw new Error('Password must contain at least one lowercase letter');
+        }
+
+        if (!/[0-9]/.test(password)) {
+            throw new Error('Password must contain at least one number');
+        }
+
+        if (!/[^A-Za-z0-9]/.test(password)) {
+            throw new Error('Password must contain at least one special character');
+        }
+    }
+
+    private getUserByUsername(username: string): User | undefined {
+        return Array.from(this.users.values())
+            .find(u => u.username.toLowerCase() === username.toLowerCase());
+    }
+
+    private getUserByEmail(email: string): User | undefined {
+        return Array.from(this.users.values())
+            .find(u => u.email.toLowerCase() === email.toLowerCase());
+    }
+
+    private generateUserId(): string {
+        return `user_${crypto.randomBytes(16).toString('hex')}`;
+    }
+
+    private generateSessionId(): string {
+        return `session_${crypto.randomBytes(16).toString('hex')}`;
+    }
+
+    private generateTwoFactorSecret(): string {
+        return crypto.randomBytes(20).toString('hex');
+    }
+
+    private verifyTwoFactorCode(secret: string, code: string): boolean {
+        // TODO: Implement actual 2FA verification
+        return code === '123456'; // Placeholder
+    }
+}
+
+export default AuthenticationSystem;
