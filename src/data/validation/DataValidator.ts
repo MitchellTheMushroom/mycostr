@@ -1,7 +1,10 @@
 import { EventEmitter } from 'events';
 import { Logger } from '../../utils/Logger';
+import { ValidationConfig } from './interfaces/ValidationConfig';
+import { ValidationSchema, ValidationField, ValidationRule } from './interfaces/ValidationSchema';
+import { ValidationError, ValidationResult } from './interfaces/ValidationResult';
 
-interface ValidationConfig {
+// Remove interfaces since they're now imported
     maxErrors: number;
     cacheTimeout: number;
     customTypes: string[];
